@@ -47,7 +47,11 @@ const DrawerNavigatorItems = ({
   labelStyle,
 }: Props) => (
   <View style={[styles.container, style]}>
-    {items.map((route: NavigationRoute, index: number) => {
+    {items.map((route: NavigationRoute, index: number, item) => {
+      if (item[index].hidden === true) {
+          return (<Text key={route.key} style={{height: 0, width: 0}}></Text>);
+      }
+      
       const focused = activeItemKey === route.key;
       const color = focused ? activeTintColor : inactiveTintColor;
       const backgroundColor = focused
