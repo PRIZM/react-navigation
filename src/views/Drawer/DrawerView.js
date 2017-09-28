@@ -142,7 +142,8 @@ export default class DrawerView<T: *> extends PureComponent<void, Props, void> {
         }
         return {
             fName: _.get(props, 'navigation.screenProps.user.data.fName', ''),
-            rebateTotal: _.get(props, 'navigation.screenProps.user.rebate_total', '0.00')
+            rebateTotal: _.get(props, 'navigation.screenProps.user.rebate_total', '0.00'),
+            userPharmacyDuration: _.get(props, 'navigation.screenProps.user.user_pharmacy_duration', 'NO_PHARM_FOUND')
         }
     }
 
@@ -180,10 +181,10 @@ export default class DrawerView<T: *> extends PureComponent<void, Props, void> {
                         : DrawerLayout.positions.Left
                 }
             >
-              <DrawerScreen
-                  screenProps={this.props.screenProps}
-                  navigation={this._screenNavigationProp}
-              />
+                <DrawerScreen
+                    screenProps={this.props.screenProps}
+                    navigation={this._screenNavigationProp}
+                />
             </DrawerLayout>
         );
     }

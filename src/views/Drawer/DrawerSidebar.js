@@ -62,7 +62,8 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
 
         this.state = {
             fname: null,
-            rebate_total: null
+            rebate_total: null,
+            user_pharmacy_duration: 'NO_PHARM_FOUND'
         }
 
         //this.updateDrawerUserInfo = this.updateDrawerUserInfo.bind(this);
@@ -133,7 +134,7 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
 
     updateDrawerUserInfo(info) {
         const {
-            fName, rebateTotal
+            fName, rebateTotal, userPharmacyDuration
         }
             = info;
         //console.log('update drawer');
@@ -141,6 +142,7 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
         let newState = this.state;
         newState.fname = fName;
         newState.rebate_total = rebateTotal;
+        newState.user_pharmacy_duration = userPharmacyDuration;
         this.setState(newState);
         this.forceUpdate();
     }
@@ -149,23 +151,37 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
         const ContentComponent = this.props.contentComponent;
         const {state} = this.props.navigation;
         //console.log('drawer sidebar render');
+        let routes = _.cloneDeep(state.routes);
+        if (this.state.user_pharmacy_duration === 'NO_PHARM_FOUND') {
+            let hide_item = (() => {
+                for (let i = 0; i < routes.length; i++) {
+                    if (routes[i].key === 'Refill') {
+                        return i;
+                    }
+                }
+                return null;
+            })();
+            if (hide_item) {
+                routes[hide_item].hidden = true;
+            }
+        }
         return (
             <View style={[styles.container, this.props.style]}>
-              <ContentComponent
-                  {...this.props.contentOptions}
-                  navigation={this.props.navigation}
-                  items={state.routes}
-                  activeItemKey={
-                      state.routes[state.index] && state.routes[state.index].key
-                  }
-                  screenProps={this.props.screenProps}
-                  getLabel={this._getLabel}
-                  renderIcon={this._renderIcon}
-                  onItemPress={this._onItemPress}
-                  router={this.props.router}
-                  fname={this.state.fname}
-                  rebate_total={this.state.rebate_total}
-              />
+                <ContentComponent
+                    {...this.props.contentOptions}
+                    navigation={this.props.navigation}
+                    items={routes}
+                    activeItemKey={
+                        state.routes[state.index] && state.routes[state.index].key
+                    }
+                    screenProps={this.props.screenProps}
+                    getLabel={this._getLabel}
+                    renderIcon={this._renderIcon}
+                    onItemPress={this._onItemPress}
+                    router={this.props.router}
+                    fname={this.state.fname}
+                    rebate_total={this.state.rebate_total}
+                />
             </View>
         );
     }
