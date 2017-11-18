@@ -142,6 +142,11 @@ export type NavigationScreenOptions = {
   title?: string,
 };
 
+export type SceneIndicesForInterpolationInputRange = {
+      first: number,
+      last: number
+    };
+
 export type NavigationScreenConfigProps = {
   navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
   screenProps: Object,
