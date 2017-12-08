@@ -111,6 +111,9 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
     };
 
     _onItemPress = ({route, focused}: DrawerItem) => {
+        this.updateDrawerUserInfo({
+            selectedRoute: _.get(route, 'key', null)
+        });
         this.props.navigation.navigate('DrawerClose');
         if (!focused) {
             const subAction = route.index !== undefined && route.index !== 0 // if the child screen is a StackRouter then always navigate to its first screen (see #1914)
@@ -133,16 +136,21 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
     }*/
 
     updateDrawerUserInfo(info) {
-        const {
-            fName, rebateTotal, userPharmacyDuration
-        }
-            = info;
-        //console.log('update drawer');
-
         let newState = this.state;
-        newState.fname = fName;
-        newState.rebate_total = rebateTotal;
-        newState.user_pharmacy_duration = userPharmacyDuration;
+        if (_.get(info, 'selectedRoute', null)) {
+            const {selectedRoute} = info;
+
+            newState.selectedRoute = selectedRoute;
+        } else {
+            const {
+                fName, rebateTotal, userPharmacyDuration
+            }
+                = info;
+
+            newState.fname = fName;
+            newState.rebate_total = rebateTotal;
+            newState.user_pharmacy_duration = userPharmacyDuration;
+        }
         this.setState(newState);
         this.forceUpdate();
     }
@@ -161,9 +169,25 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
                 }
                 return null;
             })();
-            if (hide_item) {
+            if (hide_item !== null) {
                 routes[hide_item].hidden = true;
             }
+        }
+        // also hide the current route
+        let selectedRoute = null;
+        if (!(selectedRoute = _.get(this.state, 'selectedRoute', null))) {
+            selectedRoute = 'Home';
+        }
+        let hide_current_item = (() => {
+            for (let i = 0; i < routes.length; i++) {
+                if (routes[i].key === selectedRoute) {
+                    return i;
+                }
+            }
+            return null;
+        })();
+        if (hide_current_item !== null) {
+            routes[hide_current_item].hidden = true;
         }
         return (
             <View style={[styles.container, this.props.style]}>
