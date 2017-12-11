@@ -127,6 +127,7 @@ class DrawerSidebar extends PureComponent<void, Props, void> {
         //console.log('mounted');
         //this.updateDrawerUserInfo();
         this.props.helperFunctions.updateSidebar = this.updateDrawerUserInfo.bind(this);
+        this.props.navigation.screenProps.helperFunctions.updateSidebar = this.updateDrawerUserInfo.bind(this);
     }
 
     /*componentWillReceiveProps(newProps) {
